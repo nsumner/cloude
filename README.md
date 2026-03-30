@@ -14,7 +14,7 @@ A CLI tool that runs Claude Code against a local llama.cpp model.
 
 ### Pre-Setup
 
-#### **Installing [llama.cpp](https://github.com/ggml-org/llama.cpp) **
+#### **Installing [llama.cpp](https://github.com/ggml-org/llama.cpp)**
 
 If you don't have [llama.cpp](https://github.com/ggml-org/llama.cpp) installed,
 that comes first. Per the [unsloth](https://unsloth.ai/docs/models/qwen3.5) guides:
