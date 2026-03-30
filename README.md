@@ -1,6 +1,6 @@
 # cloude
 
-A CLI tool that runs Claude Code against a local llama.cpp model, enabling you to use the full power of Claude with locally hosted LLMs.
+A CLI tool that runs Claude Code against a local llama.cpp model.
 
 
 ## Installation
@@ -36,6 +36,32 @@ that comes first. Per the [unsloth](https://unsloth.ai/docs/models/qwen3.5) guid
    ```
 
 This assumes that `~/.local/bin` is already on your path. If not, make it and add it to your path.
+
+#### **Downloading models**
+
+Install the `hf` package if necessary:
+
+```bash
+python3 -m venv ~/.venv/hf
+source ~/.venv/hf/bin/activate
+pip install huggingface_hub hf_transfer
+```
+
+Download appropriate models from [huggingface](https://huggingface.co/).
+The `--local-dir` argument determines where the model will be saved.
+
+1. Qwen 27B 2-bit
+   ```bash
+   hf download unsloth/Qwen3.5-27B-GGUF --local-dir ~/models/unsloth/Qwen3.5-27B-GGUF --include "*Q2_K_M*"
+   ```
+2. Omnicoder 3-bit
+   ```bash
+   hf download Tesslate/OmniCoder-2-9B-GGUF    --local-dir Tesslate/OmniCoder-2-9B-GGUF/    --include "*q3_k_l*"
+   ```
+3. Omnicoder 5-bit
+   ```bash
+   hf download Tesslate/OmniCoder-2-9B-GGUF    --local-dir Tesslate/OmniCoder-2-9B-GGUF/    --include "*q5_k_m*"
+   ```
 
 
 ### Setup
