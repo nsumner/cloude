@@ -130,26 +130,24 @@ class LlamaConfig:
 # CONFIGURATIONS
 # ==============================
 
+
+BASE_PATH = Path.home()
+
+
 CONFIGS: dict[str, LlamaConfig] = {
     "omni-small": LlamaConfig(
-        name="OmniCoder-2-9B-Q3KL",
-        gguf_path=Path(
-            "/home/nick/Tesslate/OmniCoder-2-9B-GGUF/omnicoder-2-9b-q3_k_l.gguf"
-        ),
+        name="OmniCoder-9B-Q3KL",
+        gguf_path=BASE_PATH / "Tesslate/OmniCoder-9B-GGUF/omnicoder-9b-q3_k_l.gguf",
         n_ctx=65536,
     ),
     "omni-medium": LlamaConfig(
-        name="OmniCoder-2-9B-Q5KM",
-        gguf_path=Path(
-            "/home/nick/Tesslate/OmniCoder-2-9B-GGUF/omnicoder-2-9b-q5_k_m.gguf"
-        ),
+        name="OmniCoder-9B-Q5KM",
+        gguf_path=BASE_PATH / "Tesslate/OmniCoder-9B-GGUF/omnicoder-9b-q5_k_m.gguf",
         n_ctx=65536,
     ),
     "qwen-27-desk": LlamaConfig(
         name="Qwen3.5-27B-UD-Q2",
-        gguf_path=Path(
-            "/home/nick/unsloth/Qwen3.5-27B-GGUF/Qwen3.5-27B-UD-Q2_K_XL.gguf"
-        ),
+        gguf_path=BASE_PATH / "unsloth/Qwen3.5-27B-GGUF/Qwen3.5-27B-UD-Q2_K_XL.gguf",
         n_ctx=175000,
     ),
 }

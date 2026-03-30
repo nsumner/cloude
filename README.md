@@ -50,17 +50,17 @@ pip install huggingface_hub hf_transfer
 Download appropriate models from [huggingface](https://huggingface.co/).
 The `--local-dir` argument determines where the model will be saved.
 
-1. Qwen 27B 2-bit
+1. [Qwen 27B 2-bit](https://huggingface.co/unsloth/Qwen3.5-27B-GGUF)
    ```bash
    hf download unsloth/Qwen3.5-27B-GGUF --local-dir ~/models/unsloth/Qwen3.5-27B-GGUF --include "*Q2_K_M*"
    ```
-2. Omnicoder 3-bit
+2. [Omnicoder 3-bit](https://huggingface.co/Tesslate/OmniCoder-9B-GGUF)
    ```bash
-   hf download Tesslate/OmniCoder-2-9B-GGUF    --local-dir Tesslate/OmniCoder-2-9B-GGUF/    --include "*q3_k_l*"
+   hf download Tesslate/OmniCoder-9B-GGUF    --local-dir ~/Tesslate/OmniCoder-9B-GGUF/    --include "*q3_k_l*"
    ```
-3. Omnicoder 5-bit
+3. [Omnicoder 5-bit](https://huggingface.co/Tesslate/OmniCoder-9B-GGUF)
    ```bash
-   hf download Tesslate/OmniCoder-2-9B-GGUF    --local-dir Tesslate/OmniCoder-2-9B-GGUF/    --include "*q5_k_m*"
+   hf download Tesslate/OmniCoder-9B-GGUF    --local-dir ~/Tesslate/OmniCoder-9B-GGUF/    --include "*q5_k_m*"
    ```
 
 
