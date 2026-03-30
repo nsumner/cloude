@@ -71,6 +71,12 @@ cloude
 cloude --config <model-name>
 ```
 
+### Passthrough Options
+
+```bash
+cloude -p "Say hello"
+```
+
 ### Server-Only Mode
 
 Start the local LLM server without running Claude:

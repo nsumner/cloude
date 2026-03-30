@@ -342,32 +342,18 @@ def run_claude(base_url: str, model: str, passthrough_args: list[str]) -> int:
 
 def parse_args() -> tuple[argparse.Namespace, list[str]]:
     parser = argparse.ArgumentParser(
-        description="Run Claude Code against a local llama.cpp model"
+        description="Run Claude Code against a local llama.cpp model",
+        allow_abbrev=False
     )
 
     parser.add_argument("--config", default=DEFAULT_CONFIG)
     parser.add_argument("--list", action="store_true")
+    parser.add_argument("--metrics", action="store_true")
+    parser.add_argument("--port", type=int, help="Override port for the server")
+    parser.add_argument("--server", action="store_true", help="Start server only")
     parser.add_argument("--verbose", action="store_true")
 
-    parser.add_argument(
-        "--server",
-        action="store_true",
-        help="Start server only (do not run Claude)",
-    )
-
-    parser.add_argument(
-        "--port",
-        type=int,
-        help="Override port for the server",
-    )
-
-    parser.add_argument(
-        "claude_args",
-        nargs=argparse.REMAINDER,
-    )
-
-    args, remainder = parser.parse_known_args()
-    return args, remainder
+    return parser.parse_known_args()
 
 
 def list_configs() -> None:
@@ -400,6 +386,7 @@ def main() -> int:
         return 0
 
     setup_logging(args.verbose)
+    logger.info(f"{args} {passthrough}")
 
     if args.config not in CONFIGS:
         logger.error("unknown_config", extra={"config": args.config})
@@ -434,9 +421,10 @@ def main() -> int:
 
         outcome = run_claude(config.base_url, config.name, passthrough)
 
-        print("\n\n\n")
-        metrics = fetch_metrics(config.base_url)
-        metrics.report()
+        if args.verbose or args.metrics:
+            print("\n\n\n")
+            metrics = fetch_metrics(config.base_url)
+            metrics.report()
         return outcome
 
     finally:
