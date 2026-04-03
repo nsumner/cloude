@@ -84,7 +84,7 @@ logger = logging.getLogger("claude-local")
 LLAMA_SERVER_BIN = os.getenv("LLAMA_SERVER_BIN", "llama-server")
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, kw_only=True)
 class LlamaConfig:
     name: str
     gguf_path: Path
@@ -111,9 +111,7 @@ class LlamaConfig:
             "--keep", "1024",
             "--cache-type-k", "q8_0",
             "--cache-type-v", "q8_0",
-            "--swa-full",
-            "--no-context-shift",
-            "--chat-template-kwargs", '{"enable_thinking": false}',
+            "--reasoning", "on",
             "--mlock",
             "--no-mmap",
             "--metrics",
@@ -139,16 +137,59 @@ CONFIGS: dict[str, LlamaConfig] = {
         name="OmniCoder-9B-Q3KL",
         gguf_path=BASE_PATH / "Tesslate/OmniCoder-9B-GGUF/omnicoder-9b-q3_k_l.gguf",
         n_ctx=65536,
+        extra_flags=[
+            "--swa-full",
+            "--temp", "0.6",
+            "--top-k", "20",
+            "--top-p", "0.95",
+            "--min-p", "0.0",
+            "--presence-penalty", "0.0",
+            "--repeat-penalty", "1.0",
+        ]
     ),
     "omni-medium": LlamaConfig(
         name="OmniCoder-9B-Q5KM",
         gguf_path=BASE_PATH / "Tesslate/OmniCoder-9B-GGUF/omnicoder-9b-q5_k_m.gguf",
-        n_ctx=65536,
+        n_ctx=32768,
+        extra_flags=[
+            "--swa-full",
+            "--temp", "0.6",
+            "--top-k", "20",
+            "--top-p", "0.95",
+            "--min-p", "0.0",
+            "--presence-penalty", "0.0",
+            "--repeat-penalty", "1.0",
+        ]
     ),
     "qwen-27-desk": LlamaConfig(
         name="Qwen3.5-27B-UD-Q2",
         gguf_path=BASE_PATH / "unsloth/Qwen3.5-27B-GGUF/Qwen3.5-27B-UD-Q2_K_XL.gguf",
         n_ctx=175000,
+        extra_flags=[
+            "--swa-full",
+            "--temp", "0.6",
+            "--top-k", "20",
+            "--top-p", "0.95",
+            "--min-p", "0.0",
+            "--presence-penalty", "0.0",
+            "--repeat-penalty", "1.0",
+        ]
+    ),
+    "phi4": LlamaConfig(
+        name="Phi-4-mini-instruct-Q6",
+        gguf_path=BASE_PATH / "unsloth/Phi-4-mini-instruct-GGUF/Phi-4-mini-instruct-Q6_K.gguf",
+        n_ctx=24576,
+        extra_flags=[
+            # Phi 4 presently dislikes quantization on my setup.
+            "--cache-type-k", "f16",
+            "--cache-type-v", "f16",
+            "--no-context-shift",
+            "--temp", "0.8",
+            "--top-k", "20",
+            "--top-p", "0.95",
+            "--min-p", "0.0",
+            "--repeat-penalty", "1.2",
+        ]
     ),
 }
 
@@ -167,7 +208,7 @@ class LlamaServer:
         self.started_by_us: bool = False
 
     def _validate_model(self) -> None:
-        if not os.path.isfile(self.config.gguf_path):
+        if not self.config.gguf_path.exists():
             raise FileNotFoundError(f"GGUF model not found: {self.config.gguf_path}")
 
     def _is_server_running(self) -> bool:
@@ -271,7 +312,7 @@ def _to_visual(number: float) -> float:
     return number
 
 
-@dataclass
+@dataclass(frozen=True, kw_only=True)
 class Metrics:
     context_size: float = 0
     kv_cache_total: float = 0
@@ -314,10 +355,26 @@ def fetch_metrics(base_url: str) -> Metrics:
 # ==============================
 
 
-def run_claude(base_url: str, model: str, passthrough_args: list[str]) -> int:
+# It seems like autocompacting a bit earlier is necessary to avoid issues with
+# overflowing nonstandard context windows. Note, at best claude code does not
+# seem to handle this parameter well, so consider it a recommendation.
+_AUTOCOMPACT_PERCENT: int = 90
+
+
+def run_claude(base_url: str, model: str, context_size: int, passthrough_args: list[str]) -> int:
     env = os.environ.copy()
+
+    # Basic model redirection
     env["ANTHROPIC_BASE_URL"] = base_url
     env["ANTHROPIC_AUTH_TOKEN"] = "local-llama"
+    env["CLAUDE_CODE_ATTRIBUTION_HEADER"] = "0"
+    env["CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC"] = "1"
+    env["DISABLE_TELEMETRY"] = "1"
+    env["DISABLE_ERROR_REPORTING"] = "1"
+
+    # Tailoring underlying behavior
+    env["CLAUDE_CODE_AUTO_COMPACT_WINDOW"] = str(context_size)
+    env["CLAUDE_AUTOCOMPACT_PCT_OVERRIDE"] = str(_AUTOCOMPACT_PERCENT)
 
     cmd = ["claude", "--model", model, *passthrough_args]
 
@@ -417,7 +474,7 @@ def main() -> int:
             while True:
                 time.sleep(60)
 
-        outcome = run_claude(config.base_url, config.name, passthrough)
+        outcome = run_claude(config.base_url, config.name, config.n_ctx, passthrough)
 
         if args.verbose or args.metrics:
             print("\n\n\n")

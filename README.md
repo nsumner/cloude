@@ -62,7 +62,10 @@ The `--local-dir` argument determines where the model will be saved.
    ```bash
    hf download Tesslate/OmniCoder-9B-GGUF    --local-dir ~/Tesslate/OmniCoder-9B-GGUF/    --include "*q5_k_m*"
    ```
-
+4. [Phi-4-mini-instruct-GGUF](https://huggingface.co/unsloth/Phi-4-mini-instruct-GGUF)
+   ```bash
+   hf download unsloth/Phi-4-mini-instruct-GGUF    --local-dir ~/unsloth/Phi-4-mini-instruct-GGUF/    --include "*Q6_K*"
+   ```
 
 ### Setup
 
