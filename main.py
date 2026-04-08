@@ -129,7 +129,7 @@ class LlamaConfig:
 # ==============================
 
 
-BASE_PATH = Path.home()
+BASE_PATH = Path.home() / "models"
 
 
 CONFIGS: dict[str, LlamaConfig] = {
@@ -162,9 +162,9 @@ CONFIGS: dict[str, LlamaConfig] = {
         ]
     ),
     "qwen-27-desk": LlamaConfig(
-        name="Qwen3.5-27B-UD-Q2",
-        gguf_path=BASE_PATH / "unsloth/Qwen3.5-27B-GGUF/Qwen3.5-27B-UD-Q2_K_XL.gguf",
-        n_ctx=175000,
+        name="Qwen3.5-27B-UD-IQ3_XXS",
+        gguf_path=BASE_PATH / "unsloth/Qwen3.5-27B-GGUF/Qwen3.5-27B-UD-IQ3_XXS.gguf",
+        n_ctx=95000,
         extra_flags=[
             "--swa-full",
             "--temp", "0.6",
@@ -173,6 +173,18 @@ CONFIGS: dict[str, LlamaConfig] = {
             "--min-p", "0.0",
             "--presence-penalty", "0.0",
             "--repeat-penalty", "1.0",
+        ]
+    ),
+    "gemma-26-desk": LlamaConfig(
+        name="gemma-4-26B-A4B-it-UD-IQ3_S",
+        gguf_path=BASE_PATH / "unsloth/gemma-4-26B-A4B-it-GGUF/gemma-4-26B-A4B-it-UD-IQ3_S.gguf",
+        n_ctx=50000,
+        extra_flags=[
+            "--swa-full",
+            "--temp", "1.0",
+            "--top-k", "64",
+            "--top-p", "0.95",
+            "--min-p", "0.0",
         ]
     ),
     "phi4": LlamaConfig(

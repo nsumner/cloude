@@ -29,7 +29,7 @@ that comes first. Per the [unsloth](https://unsloth.ai/docs/models/qwen3.5) guid
    cmake llama.cpp -B llama.cpp/build -DBUILD_SHARED_LIBS=OFF -DGGML_CUDA=ON
    ```
 4. ```bash
-   cmake --build llama.cpp/build --config Release -j --clean-first --target llama-cli llama-mtmd-cli llama-server llama-gguf-split
+   cmake --build llama.cpp/build --config Release -j 2 --clean-first --target llama-cli llama-mtmd-cli llama-server llama-gguf-split
    ```
 5. ```bash
    cp llama.cpp/build/bin/llama-* ~/.local/bin/
@@ -50,21 +50,25 @@ pip install huggingface_hub hf_transfer
 Download appropriate models from [huggingface](https://huggingface.co/).
 The `--local-dir` argument determines where the model will be saved.
 
-1. [Qwen 27B 2-bit](https://huggingface.co/unsloth/Qwen3.5-27B-GGUF)
+1. [Qwen 27B 3-bit](https://huggingface.co/unsloth/Qwen3.5-27B-GGUF)
    ```bash
-   hf download unsloth/Qwen3.5-27B-GGUF --local-dir ~/models/unsloth/Qwen3.5-27B-GGUF --include "*Q2_K_M*"
+   hf download unsloth/Qwen3.5-27B-GGUF --local-dir ~/models/unsloth/Qwen3.5-27B-GGUF --include "*IQ3*"
    ```
 2. [Omnicoder 3-bit](https://huggingface.co/Tesslate/OmniCoder-9B-GGUF)
    ```bash
-   hf download Tesslate/OmniCoder-9B-GGUF    --local-dir ~/Tesslate/OmniCoder-9B-GGUF/    --include "*q3_k_l*"
+   hf download Tesslate/OmniCoder-9B-GGUF    --local-dir ~/models/Tesslate/OmniCoder-9B-GGUF/    --include "*q3_k_l*"
    ```
 3. [Omnicoder 5-bit](https://huggingface.co/Tesslate/OmniCoder-9B-GGUF)
    ```bash
-   hf download Tesslate/OmniCoder-9B-GGUF    --local-dir ~/Tesslate/OmniCoder-9B-GGUF/    --include "*q5_k_m*"
+   hf download Tesslate/OmniCoder-9B-GGUF    --local-dir ~/models/Tesslate/OmniCoder-9B-GGUF/    --include "*q5_k_m*"
    ```
 4. [Phi-4-mini-instruct-GGUF](https://huggingface.co/unsloth/Phi-4-mini-instruct-GGUF)
    ```bash
-   hf download unsloth/Phi-4-mini-instruct-GGUF    --local-dir ~/unsloth/Phi-4-mini-instruct-GGUF/    --include "*Q6_K*"
+   hf download unsloth/Phi-4-mini-instruct-GGUF    --local-dir ~/models/unsloth/Phi-4-mini-instruct-GGUF/    --include "*Q6_K*"
+   ```
+5. [gemma 4 26B-A4B](https://huggingface.co/unsloth/gemma-4-26B-A4B-it-GGUF)
+   ```bash
+   hf download unsloth/gemma-4-26B-A4B-it-GGUF --local-dir ~/models/unsloth/gemma-4-26B-A4B-it-GGUF --include "*IQ3_S*"
    ```
 
 ### Setup
@@ -140,7 +144,8 @@ CONFIGS: Dict[str, LlamaConfig] = {
 |--------|-------|-------------|
 | `omni-small` | OmniCoder-2-9B-Q3KL | 65,536 |
 | `omni-medium` | OmniCoder-2-9B-Q5KM | 65,536 |
-| `qwen-27-desk` | Qwen3.5-27B-UD-Q2 | 175,000 |
+| `qwen-27-desk` | Qwen3.5-27B-UD-IQ3_XXS | 95,000 |
+| `gemma-26-desk` | gemma-4-26B-A4B-it-UD-IQ3_S | 50,000 |
 
 
 ## License
